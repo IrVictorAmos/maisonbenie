@@ -142,7 +142,7 @@ export class PwaService {
     const userAgent = navigator.userAgent.toLowerCase();
     
     // Vérifier si on peut utiliser la Web Share API
-    if (navigator.share && navigator.canShare) {
+    if (typeof navigator.share === 'function') {
       this.shareInstallInstructions();
     } else {
       // Afficher les instructions selon le navigateur
@@ -248,23 +248,5 @@ export class PwaService {
 
     return window.matchMedia('(display-mode: standalone)').matches ||
            (window.navigator as any).standalone === true;
-  }
-
-  /**
-   * Obtenir les informations de débogage
-   */
-  getDebugInfo(): string {
-    if (!isPlatformBrowser(this.platformId)) return 'SSR Mode';
-
-    return `
-🔍 Informations PWA:
-- Service Worker: ${('serviceWorker' in navigator) ? '✅' : '❌'}
-- Manifest: ${document.querySelector('link[rel="manifest"]') ? '✅' : '❌'}
-- HTTPS: ${window.location.protocol === 'https:' ? '✅' : '❌ (localhost OK)'}
-- Mode PWA: ${this.isPwaMode() ? '✅' : '❌'}
-- Installée: ${this.isInstalled() ? '✅' : '❌'}
-- Prompt disponible: ${this.installPromptAvailable() ? '✅' : '❌'}
-- beforeinstallprompt: ${this.deferredPrompt ? '✅' : '❌'}
-    `;
   }
 }
